@@ -1,0 +1,3 @@
+# Products of Assembly compilation
+*.o
+*.a
