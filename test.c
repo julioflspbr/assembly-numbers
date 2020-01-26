@@ -6,9 +6,11 @@
 ///
 /// Declarations
 ///
-bool checkPrintInterger(long long test);
+bool checkPrintInterger(long long);
 extern void printInteger(char*, long long);
-bool testPrintInteger(void);
+
+bool checkParseInteger(const char*);
+extern long long parseInteger(const char*);
 
 ///
 /// Implementations
@@ -16,8 +18,14 @@ bool testPrintInteger(void);
 int main() {
   bool success = true;
 
-  success &= testPrintInteger();
+  success &= checkPrintInterger(20);
+  success &= checkPrintInterger(3917220579289287);
+  success &= checkPrintInterger(0x40);
 
+  success &= checkParseInteger("20");
+  success &= checkParseInteger("3917220579289287");
+
+  if (success) fprintf(stdout, "All tests have passed!\n");
   return success ? 0 : -1;
 }
 
@@ -36,13 +44,14 @@ bool checkPrintInterger(long long test) {
   return success;
 }
 
-bool testPrintInteger() {
-  bool success = true;
+bool checkParseInteger(const char* test) {
+  long long expectation;
+  sscanf(test, "%lld", &expectation);
 
-  success &= checkPrintInterger(20);
-  success &= checkPrintInterger(3917220579289287);
-  success &= checkPrintInterger(0x40);
+  long long output = parseInteger(test);
 
-  if (success) fprintf(stdout, "All tests passed!\n");
+  bool success = output == expectation;
+  if (!success) fprintf(stderr, "parseInteger -> output: %lld, expected: %lld\n", output, expectation);
+
   return success;
 }

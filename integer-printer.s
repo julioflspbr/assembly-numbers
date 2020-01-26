@@ -1,7 +1,5 @@
 .data
   .set stringSize,  64
-  .set write,       0x2000004
-  .set stdout,      1
 
 .text
   .align 4
@@ -11,7 +9,7 @@
 # the result of this repeated process is the integer reversed (e.g. 12345 would be printed "54321"). At the end, we reverse the string
 # to make it look the way it should (e.g. revert "54321" to be "12345")
 
-_printInteger:            # usage: const char* printInteger(char*, long long)
+_printInteger:            # usage: void printInteger(char*, long long)
                           # 1st param: no need to grab because we will already be using %rdi to store the final string
   mov   %rsi, %rax        # 2nd param: grab the integer to be printed
 
