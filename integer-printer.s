@@ -23,15 +23,32 @@ _printInteger:            # usage: void printInteger(char*, long long)
   mov   $10, %r10         # the divisor (see the introductory comment above)
 
 getNextChar:
-  mov   $0, %rdx          # reset the dividend's high quadword
-  div   %r10              # divide the integer
+  cqo                     # extend the dividend's sign bit
+  idiv  %r10              # divide the integer
+  mov   %rax, %r8
 
-  add   $'0', %dl         # else transform the remainder in character
-  mov   %dl, (%rsi)       # move the character to the source string
+  lahf                    # store the sign to later on append '-' to the string
+  mov   %rax, %r9
+
+  mov   %rdx, %rax        # remove the sign of the remainder
+  cqo
+  xor   %rdx, %rax
+  sub   %rdx, %rax
+  add   $'0', %al         # transform the remainder in character
+  mov   %al, (%rsi)       # move the character to the source string
   inc   %rsi              # increment the source string's cursor
 
+  mov   %r8, %rax
   cmp   $0, %rax          # check whether done computing all the integer characters
   jne   getNextChar       # repeat the operation
+
+minusSign:
+  mov   %r9, %rax         # restore the sign to append the '-'in case it is negative
+  sahf
+  jns   revertString      # in case the number is not negative, it is ready to revert the string
+
+  movb  $'-', (%rsi)      # append the minus sign to the reversed string
+  inc   %rsi
 
 revertString:
   sub   %rsi, %rcx        # subtract from the current source string's address, thus getting the string length

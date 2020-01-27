@@ -20,10 +20,12 @@ int main() {
 
   success &= checkPrintInterger(20);
   success &= checkPrintInterger(3917220579289287);
+  success &= checkPrintInterger(-75);
   success &= checkPrintInterger(0x40);
 
   success &= checkParseInteger("20");
   success &= checkParseInteger("3917220579289287");
+  success &= checkParseInteger("-75");
 
   if (success) fprintf(stdout, "All tests have passed!\n");
   return success ? 0 : -1;
