@@ -18,11 +18,14 @@ parse:
 
 getDigit:
   dec   %rdi              # move the string cursor to its last character
+  cmpb  $'-', (%rdi)       # if minus sign, invert signal and return
+  je    invertSign
+
   mov   $0, %rax          # clear out multiplication result operands
   mov   $0, %rdx
   mov   (%rdi), %al       # load the character
   sub   $'0', %al         # and transform it to integer
-  mul   %r9               # multiply by the 10-multiplier
+  imul  %r9               # multiply by the 10-multiplier
   add   %rax, %r8         # accumulate
 
   mov   $10, %rax         # prepare multiplication operands to build the new 10-multiplier
@@ -31,6 +34,11 @@ getDigit:
   mov   %rax, %r9         # make the multiplication-by-10 result the new 10-multiplier
 
   loop  getDigit          # go get the next digit until counter is 0
+  jmp   return
 
+invertSign:
+  neg %r8
+
+return:
   mov %r8, %rax
   ret
