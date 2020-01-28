@@ -1,18 +1,18 @@
+.data
+  .set largestLength, 20
 .text
   .align 4
   .global _parseInteger
 
 _parseInteger:            # usage: long long parseInteger(const char*)
-  mov   $0, %rcx
+  mov   %rdi, %r8         # store string address position 0
+  mov   $0, %rax          # byte comparison, stop when find the null-character
+  cld                     # scan string forward
+  repne scasb             # increment the string cursor until find the null-character
+  dec   %rdi              # cursor was past the end
+  mov   %rdi, %rcx        # calculate the string size
+  sub   %r8, %rcx
 
-findStringLength:
-  cmpb  $0, (%rdi)        # the last char is null-char
-  je    parse             # if null-char found, proceed with parsing the string
-  inc   %rcx              # else, increment the string size, we've not reached its end yet
-  inc   %rdi
-  jmp   findStringLength  # do it all over again, until the null-char is found
-
-parse:
   mov   $0, %r8           # initialise the accumulator
   mov   $1, %r9           # initialise the 10-multiplier
 
