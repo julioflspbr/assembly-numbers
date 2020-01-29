@@ -1,24 +1,24 @@
+.include "exception.s"
+
 .text
   .align 4
   .global _parseInteger
 
 _parseInteger:            # usage: long long parseInteger(const char*)
-  mov   $0, %rcx
+  mov   %rdi, %r8         # store string address position 0
+  mov   $0, %rax          # byte comparison, stop when find the null-character
+  cld                     # scan string forward
+  repne scasb             # increment the string cursor until find the null-character
+  dec   %rdi              # cursor was past the end
+  mov   %rdi, %rcx        # calculate the string size
+  sub   %r8, %rcx
 
-findStringLength:
-  cmpb  $0, (%rdi)        # the last char is null-char
-  je    parse             # if null-char found, proceed with parsing the string
-  inc   %rcx              # else, increment the string size, we've not reached its end yet
-  inc   %rdi
-  jmp   findStringLength  # do it all over again, until the null-char is found
-
-parse:
   mov   $0, %r8           # initialise the accumulator
   mov   $1, %r9           # initialise the 10-multiplier
 
 getDigit:
   dec   %rdi              # move the string cursor to its last character
-  cmpb  $'-', (%rdi)       # if minus sign, invert signal and return
+  cmpb  $'-', (%rdi)      # if minus sign, invert signal and return
   je    invertSign
 
   mov   $0, %rax          # clear out multiplication result operands
@@ -27,6 +27,10 @@ getDigit:
   sub   $'0', %al         # and transform it to integer
   imul  %r9               # multiply by the 10-multiplier
   add   %rax, %r8         # accumulate
+
+  seto  %al               # check overflow
+  cmp   $1, %al           # if there is overflow
+  je    overflowCheck     # halt and throw overflow error
 
   mov   $10, %rax         # prepare multiplication operands to build the new 10-multiplier
   mov   $0, %rdx
@@ -38,6 +42,11 @@ getDigit:
 
 invertSign:
   neg %r8
+  jmp return
+
+overflowCheck:
+  mov   $overflow, %rdi
+  call  _throw
 
 return:
   mov %r8, %rax
