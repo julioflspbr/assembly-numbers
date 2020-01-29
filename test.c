@@ -3,14 +3,22 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "exception.h"
+
 ///
 /// Declarations
 ///
+typedef void (*ExceptionHandler)(enum Exception);
+extern void setErrorHandler(ExceptionHandler);
+
 bool checkPrintInterger(long long);
 extern void printInteger(char*, long long);
 
 bool checkParseInteger(const char*);
 extern long long parseInteger(const char*);
+
+bool checkOverflowErrorHandler(void);
+void checkParseOverflow(enum Exception);
 
 ///
 /// Implementations
@@ -26,6 +34,8 @@ int main() {
   success &= checkParseInteger("20");
   success &= checkParseInteger("3917220579289287");
   success &= checkParseInteger("-75");
+
+  success &= checkOverflowErrorHandler();
 
   if (success) fprintf(stdout, "All tests have passed!\n");
   return success ? 0 : -1;
@@ -56,4 +66,17 @@ bool checkParseInteger(const char* test) {
   if (!success) fprintf(stderr, "parseInteger -> output: %lld, expected: %lld\n", output, expectation);
 
   return success;
+}
+
+static bool didGetOverflowError = false;
+void checkParseOverflow(enum Exception exception) {
+  didGetOverflowError = (exception == overflow);
+}
+
+bool checkOverflowErrorHandler() {
+  setErrorHandler(&checkParseOverflow);
+  parseInteger("9223372036854775808");
+
+  if (!didGetOverflowError) fprintf(stderr, "setErrorHandler - should throw an overflow exception, but did not happen\n");
+  return didGetOverflowError;
 }

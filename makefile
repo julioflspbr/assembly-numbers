@@ -1,19 +1,23 @@
-objects = integer-printer.o integer-parser.o
+objects = throw.o integer-printer.o integer-parser.o
 debug =
 optimisation = -O2
 
 numbers: $(objects)
-	ld integer-printer.o integer-parser.o -o libnumbers.a -dylib
+	ld $(objects) -o libnumbers.a -dylib
 
-build-test: debug = -g
-build-test: optimisation = -O0
-build-test: clean numbers test
-
-check: numbers test
+check: numbers buildtest
 	./test
 
-test: test.o
-	cc test.o -o test $(optimisation) -L. -lnumbers
+buildtest: debug = -g
+buildtest: optimisation = -O0
+buildtest: test.o
+	cc -o test test.o $(optimisation) -L. -lnumbers
+
+cleancheck: clean numbers buildtest
+	./test
+
+throw.o:
+	as throw.s -o throw.o
 
 integer-printer.o:
 	as integer-printer.s -o integer-printer.o

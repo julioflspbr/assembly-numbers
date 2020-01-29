@@ -1,5 +1,5 @@
-.data
-  .set largestLength, 20
+.include "exception.s"
+
 .text
   .align 4
   .global _parseInteger
@@ -18,7 +18,7 @@ _parseInteger:            # usage: long long parseInteger(const char*)
 
 getDigit:
   dec   %rdi              # move the string cursor to its last character
-  cmpb  $'-', (%rdi)       # if minus sign, invert signal and return
+  cmpb  $'-', (%rdi)      # if minus sign, invert signal and return
   je    invertSign
 
   mov   $0, %rax          # clear out multiplication result operands
@@ -27,6 +27,10 @@ getDigit:
   sub   $'0', %al         # and transform it to integer
   imul  %r9               # multiply by the 10-multiplier
   add   %rax, %r8         # accumulate
+
+  seto  %al               # check overflow
+  cmp   $1, %al           # if there is overflow
+  je    overflowCheck     # halt and throw overflow error
 
   mov   $10, %rax         # prepare multiplication operands to build the new 10-multiplier
   mov   $0, %rdx
@@ -38,6 +42,11 @@ getDigit:
 
 invertSign:
   neg %r8
+  jmp return
+
+overflowCheck:
+  mov   $overflow, %rdi
+  call  _throw
 
 return:
   mov %r8, %rax
