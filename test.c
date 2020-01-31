@@ -17,8 +17,11 @@ extern void printInteger(char*, long long);
 bool checkParseInteger(const char*);
 extern long long parseInteger(const char*);
 
-bool checkOverflowErrorHandler(void);
+bool checkOverflowHandler(const char*);
 void checkParseOverflow(enum Exception);
+
+bool checkParseErrorHandler(void);
+void checkParseError(enum Exception);
 
 ///
 /// Implementations
@@ -35,7 +38,9 @@ int main() {
   success &= checkParseInteger("3917220579289287");
   success &= checkParseInteger("-75");
 
-  success &= checkOverflowErrorHandler();
+  success &= checkOverflowHandler("9223372036854775808");
+  success &= checkOverflowHandler("10000000000000000000");
+  success &= checkParseErrorHandler();
 
   if (success) fprintf(stdout, "All tests have passed!\n");
   return success ? 0 : -1;
@@ -73,10 +78,31 @@ void checkParseOverflow(enum Exception exception) {
   didGetOverflowError = (exception == overflow);
 }
 
-bool checkOverflowErrorHandler() {
+bool checkOverflowHandler(const char* bigValue) {
+  didGetOverflowError = false;
   setErrorHandler(&checkParseOverflow);
-  parseInteger("9223372036854775808");
+  parseInteger(bigValue);
 
-  if (!didGetOverflowError) fprintf(stderr, "setErrorHandler - should throw an overflow exception, but did not happen\n");
+  if (!didGetOverflowError) fprintf(stderr, "checkOverflowHandler - the number %s should throw an overflow exception, but did not happen\n", bigValue);
   return didGetOverflowError;
+}
+
+static bool didGetParseError = false;
+void checkParseError(enum Exception exception) {
+  didGetParseError = (exception == parse);
+}
+
+bool checkParseErrorHandler() {
+  setErrorHandler(&checkParseError);
+
+  parseInteger("92e8");
+  if (!didGetParseError) fprintf(stderr, "checkParseError - \"e\" should be considered a strange character\n");
+
+  parseInteger("92,8");
+  if (!didGetParseError) fprintf(stderr, "checkParseError - commas should not be allowed\n");
+
+  parseInteger("92.8");
+  if (!didGetParseError) fprintf(stderr, "checkParseError - integers should not contain decimal digit\n");
+
+    return didGetParseError;
 }

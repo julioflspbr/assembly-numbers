@@ -2,13 +2,14 @@
 
 .data
   # enum Exception
-  .global    notANumber
-  .global    minusInfinite
-  .global    plusInfinite
-  .global    notANumber
-  .global    overflow
-  .global    underflow
-  .global    divisionByZero
+  .global   notANumber
+  .global   minusInfinite
+  .global   plusInfinite
+  .global   notANumber
+  .global   overflow
+  .global   underflow
+  .global   divisionByZero
+  .global   parse
   # end enum Exception
 
 .bss
