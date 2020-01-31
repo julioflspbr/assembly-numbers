@@ -6,4 +6,5 @@
   .set    overflow      , 3
   .set    underflow     , 4
   .set    divisionByZero, 5
+  .set    parse         , 6
   # end enum Exception

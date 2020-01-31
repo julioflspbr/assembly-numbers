@@ -8,7 +8,9 @@ _parseInteger:            # usage: long long parseInteger(const char*)
   mov   %rdi, %r8         # store string address position 0
   mov   $0, %rax          # byte comparison, stop when find the null-character
   cld                     # scan string forward
+  mov   $20, %rcx         # 20 is the length of the largest 64-bit integer representation
   repne scasb             # increment the string cursor until find the null-character
+  jne   overflowError     # if haven't found the null-character, then it means that the string is too long
   dec   %rdi              # cursor was past the end
   mov   %rdi, %rcx        # calculate the string size
   sub   %r8, %rcx
@@ -24,13 +26,16 @@ getDigit:
   mov   $0, %rax          # clear out multiplication result operands
   mov   $0, %rdx
   mov   (%rdi), %al       # load the character
+
+  cmp   $'0', %al         # if smaller than char '0' throw parse error
+  jb    parseError
+  cmp   $'9', %al         # if greater than char '9' throw parse error
+  ja    parseError
+
   sub   $'0', %al         # and transform it to integer
   imul  %r9               # multiply by the 10-multiplier
   add   %rax, %r8         # accumulate
-
-  seto  %al               # check overflow
-  cmp   $1, %al           # if there is overflow
-  je    overflowCheck     # halt and throw overflow error
+  jo    overflowError     # halt and throw overflow error
 
   mov   $10, %rax         # prepare multiplication operands to build the new 10-multiplier
   mov   $0, %rdx
@@ -41,13 +46,19 @@ getDigit:
   jmp   return
 
 invertSign:
-  neg %r8
-  jmp return
-
-overflowCheck:
-  mov   $overflow, %rdi
-  call  _throw
+  neg   %r8
+  jmp   return
 
 return:
   mov %r8, %rax
+  ret
+
+overflowError:
+  mov   $overflow, %rdi
+  call  _throw
+  ret
+
+parseError:
+  mov   $parse, %rdi
+  call  _throw
   ret
