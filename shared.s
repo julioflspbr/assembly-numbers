@@ -1,0 +1,2 @@
+.global largestIntegerLength
+.global largestFloatLength

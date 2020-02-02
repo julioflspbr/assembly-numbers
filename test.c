@@ -3,29 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "exception.h"
+#include "test.h"
 
-///
-/// Declarations
-///
-typedef void (*ExceptionHandler)(enum Exception);
-extern void setErrorHandler(ExceptionHandler);
-
-bool checkPrintInterger(long long);
-extern void printInteger(char*, long long);
-
-bool checkParseInteger(const char*);
-extern long long parseInteger(const char*);
-
-bool checkOverflowHandler(const char*);
-void checkParseOverflow(enum Exception);
-
-bool checkParseErrorHandler(void);
-void checkParseError(enum Exception);
-
-///
-/// Implementations
-///
 int main() {
   bool success = true;
 

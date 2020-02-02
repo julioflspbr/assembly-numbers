@@ -1,4 +1,4 @@
-objects = throw.o integer-printer.o integer-parser.o
+objects = shared.o exception.o throw.o integer-printer.o integer-parser.o
 debug =
 optimisation = -O2
 
@@ -16,8 +16,14 @@ buildtest: test.o
 cleancheck: clean numbers buildtest
 	./test
 
+shared.o:
+	as shared.s -o shared.o
+
 throw.o:
 	as throw.s -o throw.o
+
+exception.o:
+	as exception.s -o exception.o
 
 integer-printer.o:
 	as integer-printer.s -o integer-printer.o

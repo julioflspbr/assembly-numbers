@@ -1,5 +1,7 @@
+.include "shared.h"
+
 .bss
-  .comm result, 20              # 20 bytes is the largest count of digits in a signed 64-bit integer
+  .comm result, largestIntegerLength
 
 .text
   .align 4
