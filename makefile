@@ -1,4 +1,4 @@
-objects = shared.o exception.o throw.o integer-printer.o integer-parser.o
+objects = shared.o exception.o throw.o integer-printer.o integer-parser.o real-number-converter.o
 debug =
 optimisation = -O2
 
@@ -30,6 +30,9 @@ integer-printer.o:
 
 integer-parser.o:
 	as integer-parser.s -o integer-parser.o
+
+real-number-converter.o:
+	as real-number-converter.s -o real-number-converter.o
 
 test.o:
 	cc -c test.c -o test.o $(debug)

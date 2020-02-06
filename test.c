@@ -17,6 +17,10 @@ int main() {
   success &= checkParseInteger("3917220579289287");
   success &= checkParseInteger("-75");
 
+  success &= checkConvertToRealNumber(27, 0b0100010100011110101110000101000111101011100001010001111010111);
+  success &= checkConvertToRealNumber(2923948573939374732, 0b0100101011011010011000111010111000000110100010100010000111110001);
+  success &= checkConvertToRealNumber(125, 0b001);
+
   success &= checkOverflowHandler("9223372036854775808");
   success &= checkOverflowHandler("10000000000000000000");
   success &= checkParseErrorHandler();
@@ -49,6 +53,13 @@ bool checkParseInteger(const char* test) {
   bool success = output == expectation;
   if (!success) fprintf(stderr, "parseInteger -> output: %lld, expected: %lld\n", output, expectation);
 
+  return success;
+}
+
+bool checkConvertToRealNumber(unsigned long long convert, unsigned long long expectation) {
+  unsigned long long output = convertToRealNumber(convert);
+  bool success = (output == expectation);
+  if (!success) fprintf(stderr, "convertToRealNumber -> output: %llx, expected: %llx\n", output, expectation);
   return success;
 }
 
