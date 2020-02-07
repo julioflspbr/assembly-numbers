@@ -1,16 +1,4 @@
-.include "exception.s"
-
-.data
-  # enum Exception
-  .global   notANumber
-  .global   minusInfinite
-  .global   plusInfinite
-  .global   notANumber
-  .global   overflow
-  .global   underflow
-  .global   divisionByZero
-  .global   parse
-  # end enum Exception
+.include "exception.h"
 
 .bss
   .comm errorHandler, 8           # void (*) (Exception)
