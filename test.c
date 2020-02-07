@@ -10,29 +10,27 @@ int main() {
 
   success &= checkPrintInterger(20);
   success &= checkPrintInterger(3917220579289287);
-  success &= checkPrintInterger(-75);
   success &= checkPrintInterger(0x40);
 
   success &= checkParseInteger("20");
   success &= checkParseInteger("3917220579289287");
-  success &= checkParseInteger("-75");
-
-  success &= checkConvertToRealNumber(27, 0b0100010100011110101110000101000111101011100001010001111010111);
-  success &= checkConvertToRealNumber(2923948573939374732, 0b0100101011011010011000111010111000000110100010100010000111110001);
-  success &= checkConvertToRealNumber(125, 0b001);
 
   success &= checkOverflowHandler("9223372036854775808");
   success &= checkOverflowHandler("10000000000000000000");
   success &= checkParseErrorHandler();
 
+  success &= checkConvertToRealNumber(27, 0b0100010100011110101110000101000111101011100001010001111010111);
+  success &= checkConvertToRealNumber(2923948573939374732, 0b0100101011011010011000111010111000000110100010100010000111110001);
+  success &= checkConvertToRealNumber(125, 0b001);
+
   if (success) fprintf(stdout, "All tests have passed!\n");
   return success ? 0 : -1;
 }
 
-bool checkPrintInterger(long long test) {
+bool checkPrintInterger(unsigned long long test) {
   char* output = malloc(64);
   char* expectation = malloc(64);
-  sprintf(expectation, "%lld", test);
+  sprintf(expectation, "%llu", test);
 
   printInteger(output, test);
 
@@ -45,13 +43,13 @@ bool checkPrintInterger(long long test) {
 }
 
 bool checkParseInteger(const char* test) {
-  long long expectation;
-  sscanf(test, "%lld", &expectation);
+  unsigned long long expectation;
+  sscanf(test, "%llu", &expectation);
 
-  long long output = parseInteger(test);
+  unsigned long long output = parseInteger(test);
 
   bool success = output == expectation;
-  if (!success) fprintf(stderr, "parseInteger -> output: %lld, expected: %lld\n", output, expectation);
+  if (!success) fprintf(stderr, "parseInteger -> output: %llu, expected: %llu\n", output, expectation);
 
   return success;
 }
