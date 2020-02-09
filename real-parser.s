@@ -1,9 +1,10 @@
 .include "shared.h"
 
 .text
-  .global _convertToRealNumber
+  .align 3
+  .global _parseReal
 
-_convertToRealNumber:               # usage: unsigned long long convertToRealNumber(unsigned long long)
+_parseReal:                         # usage: unsigned long long parseReal(unsigned long long)
   mov   %rdi, %rax                  # get the number to divide
   mov   $10, %rbx                   # the divisor to find the decimal digits
   mov   $0, %rcx                    # zero out the counter before couting the digits up

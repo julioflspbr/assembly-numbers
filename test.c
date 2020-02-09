@@ -19,9 +19,13 @@ int main() {
   success &= checkOverflowHandler("10000000000000000000");
   success &= checkParseErrorHandler();
 
-  success &= checkConvertToRealNumber(27, 0b0100010100011110101110000101000111101011100001010001111010111);
-  success &= checkConvertToRealNumber(2923948573939374732, 0b0100101011011010011000111010111000000110100010100010000111110001);
-  success &= checkConvertToRealNumber(125, 0b001);
+  success &= checkParseReal(27, 0b0100010100011110101110000101000111101011100001010001111010111);
+  success &= checkParseReal(2923948573939374732, 0b0100101011011010011000111010111000000110100010100010000111110001);
+  success &= checkParseReal(125, 0b001);
+
+  success &= checkPrintReal(0b10100010100011110101110000101000111101011100001010001111010111, 0.27f);
+  success &= checkPrintReal(0b1010010101101101001100011101011100000011010001010001000011111, 0.2923948573939374732f);
+  success &= checkPrintReal(0b1001, 0.125f);
 
   if (success) fprintf(stdout, "All tests have passed!\n");
   return success ? 0 : -1;
@@ -54,10 +58,18 @@ bool checkParseInteger(const char* test) {
   return success;
 }
 
-bool checkConvertToRealNumber(unsigned long long convert, unsigned long long expectation) {
-  unsigned long long output = convertToRealNumber(convert);
+bool checkParseReal(unsigned long long convert, unsigned long long expectation) {
+  unsigned long long output = parseReal(convert);
   bool success = (output == expectation);
-  if (!success) fprintf(stderr, "convertToRealNumber -> output: %llx, expected: %llx\n", output, expectation);
+  if (!success) fprintf(stderr, "parseReal -> output: %llx, expected: %llx\n", output, expectation);
+  return success;
+}
+
+bool checkPrintReal(unsigned long long convert, float expectation) {
+  unsigned long long integerOutput = printReal(convert);
+  float floatOutput = integerOutput / 1e19f;
+  bool success = (floatOutput == expectation);
+  if (!success) fprintf(stderr, "printReal -> floatOutput: %f, expected: %f\n", floatOutput, expectation);
   return success;
 }
 
