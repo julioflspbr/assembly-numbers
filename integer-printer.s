@@ -1,7 +1,7 @@
 .include "shared.h"
 
 .text
-  .align 4
+  .align 3
   .global _printInteger
 
 # printInteger divides an integer by 10 and get the reminder as the digit, and loops until there is no dividend nor remainder.
