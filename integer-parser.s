@@ -2,7 +2,7 @@
 .include "exception.h"
 
 .text
-  .align 8
+  .align 3
   .global _parseInteger
 
 _parseInteger:                        # usage: unsigned long long parseInteger(const char*)

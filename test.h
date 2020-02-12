@@ -17,8 +17,11 @@ extern void printInteger(char*, unsigned long long);
 bool checkParseInteger(const char*);
 extern unsigned long long parseInteger(const char*);
 
-bool checkConvertToRealNumber(unsigned long long, unsigned long long);
-extern unsigned long long convertToRealNumber(unsigned long long);
+bool checkParseReal(unsigned long long, unsigned long long);
+extern unsigned long long parseReal(unsigned long long);
+
+bool checkPrintReal(unsigned long long, float);
+extern unsigned long long printReal(unsigned long long);
 
 bool checkOverflowHandler(const char*);
 void checkParseOverflow(enum Exception);

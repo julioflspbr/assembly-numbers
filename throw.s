@@ -4,6 +4,7 @@
   .comm errorHandler, 8           # void (*) (Exception)
 
 .text
+  .align 3
   .global _throw
   .global _setErrorHandler
 
