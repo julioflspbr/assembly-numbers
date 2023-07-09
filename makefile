@@ -3,7 +3,7 @@ debug =
 optimisation = -O2
 
 numbers: $(objects)
-	ld $(objects) -o libnumbers.a -dylib
+	ld -r -static $(objects) -o libnumbers.a
 
 check: numbers buildtest
 	./test
@@ -12,9 +12,6 @@ buildtest: debug = -g
 buildtest: optimisation = -O0
 buildtest: test.o
 	cc -o test test.o $(optimisation) -L. -lnumbers
-
-cleancheck: clean numbers buildtest
-	./test
 
 shared.o:
 	as shared.s -o shared.o
